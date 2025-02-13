@@ -1,6 +1,7 @@
 package com.rishith.firstjobapp.job;
 
 
+import com.rishith.firstjobapp.company.Company;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ public class JobController {
     @PostMapping("/jobs")
     public String createJob(@RequestBody Job job) {
         jobService.createJob(job);
+
         return "Job created";
     }
 
