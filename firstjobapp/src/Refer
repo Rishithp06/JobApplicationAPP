@@ -1,0 +1,174 @@
+1.first go to embarkx/firstjobapp amele run that command
+./mvnw spring-boot:build-image -"Dspring-boot.build-image.imageName=<IMAGE-NAME>"
+
+This command is used to build a Docker image for a Spring Boot application using Maven Wrapper (mvnw) and the Spring Boot plugin.
+Breaking it down:
+
+    ./mvnw
+        This is the Maven Wrapper (mvnw), which is used to run Maven without requiring it to be installed globally.
+        If Maven is installed directly, you can replace ./mvnw with mvn.
+
+    spring-boot:build-image
+        This triggers the Spring Boot Maven Plugin to build a Docker image of the application.
+        It uses Cloud Native Buildpacks to create the image without requiring a Dockerfile.
+
+    -Dspring-boot.build-image.imageName=<IMAGE-NAME>
+        This sets the name of the generated Docker image.
+        Replace <IMAGE-NAME> with your desired Docker image name (e.g., myapp:latest).
+
+
+        To build a Docker image named my-spring-app, run:
+
+        ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=my-spring-app
+
+        Prerequisites
+
+            Your Spring Boot project must have the Spring Boot Maven Plugin configured.
+            You must have Docker installed and running to build the image.
+
+        What Happens After Running This Command?
+
+            Maven will package the Spring Boot application.
+            Cloud Native Buildpacks will automatically detect dependencies and create a Docker image.
+            The image will be stored locally and can be viewed using:
+
+        docker images
+
+        You can run the container using:
+
+        docker run -p 8080:8080 my-spring-app
+
+
+
+        2.docker login run madu
+
+        login madbekadre some error will come :
+        1️⃣ Use Plaintext Storage Instead of GPG
+
+        If you don't want to deal with GPG issues, switch Docker to store credentials in plaintext (less secure but works):
+
+        mkdir -p ~/.docker
+        echo '{ "credsStore": "desktop" }' > ~/.docker/config.json
+
+        or use:
+
+        echo '{ "credsStore": "none" }' | tee ~/.docker/config.json
+
+        Then try logging in again:
+
+        3.docker login
+
+        2️⃣ Install & Configure GPG Properly
+
+        If you want to use secure credential storage, you need to fix your GPG setup.
+        📌 Check if GPG is Installed
+
+        gpg --version
+
+        If it's missing, install it:
+
+        sudo apt update && sudo apt install gnupg2 pass -y
+
+        📌 Initialize the GPG Keyring
+
+        If GPG is installed but misconfigured:
+
+        gpg --full-generate-key
+
+            Choose RSA and RSA (default).
+            Key size: 4096.
+            Set an expiry date.
+            Enter your name & email.
+
+        After creating the key, check your key ID:
+
+        gpg --list-keys
+
+        📌 Set the Correct GPG Key for Docker
+
+        pass init "<YOUR_GPG_KEY_ID>"
+
+        Replace <YOUR_GPG_KEY_ID> with the actual key ID.
+
+        Now, retry:
+
+        4.docker login
+now it works
+        a5.fter building it docker push imagename using docker push nameofimage ie here its jobappimage
+
+
+\what happened was for me there is no space , so yeah
+Step 1: Check Docker Disk Usage
+
+Run:
+
+docker system df
+
+This will show space used by:
+
+    Images (Built/pulled images)
+    Containers (Running/stopped)
+    Volumes (Data stored)
+    Build Cache (Unused layers)
+
+🔹 Step 2: Remove Unused Containers, Images, and Volumes
+
+Run:
+
+docker system prune -a --volumes
+
+This removes:
+
+    All stopped containers
+    All unused images
+    All unused networks
+    All unused volumes
+
+⚠️ Warning: This will delete everything not actively in use.
+🔹 Step 3: Remove Specific Large Images
+
+To list all images:
+
+docker images -a
+
+To remove a specific image:
+
+docker rmi -f <image_id>
+
+🔹 Step 4: Remove Unused Containers
+
+List all containers:
+
+docker ps -a
+
+Remove all stopped containers:
+
+docker rm $(docker ps -aq)
+
+🔹 Step 5: Remove Unused Docker Volumes
+
+List volumes:
+
+docker volume ls
+
+Remove all unused volumes:
+
+docker volume prune -f
+
+
+do all this , clear up space then
+
+
+
+./mvnw spring-boot:build-image "-Dspring-boot.build-image.imageName=rishithp06/jobappimage:latest"D
+then login
+then push
+go to website called dockerhub and search your image , alli baruthe
+
+
+
+now run command docker images
+idre use madu or else pull for dockerregistry(hub) to whcih we had puahed
+docker run -p 8080:8080 imagename
+
+
