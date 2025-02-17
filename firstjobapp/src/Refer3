@@ -1,0 +1,113 @@
+To run postgres
+pull the image
+to run pgadmin but dont do now , look at line 26
+rishith@rishi:~/Desktop/embarkx/firstjobapp$ docker run -d --name db(any name) -e POSTGRES_PASSWORD=rishith postgres
+it will ask some key(ubuntu) i had sent it to Rishithp@06 , check whatsapp group called docker cred
+
+dont do now only see line30
+docker run -d --name pgadmin -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=rishith dpage/pgadmin4
+
+
+do docker ps to check
+
+so we have 2 containers postgres and pgadmin
+
+#This command is used to check network connectivity between the pgadmin container and a database container named db.
+docker exec -it pgadmin ping db
+
+#to remove container
+docker rm -f db pgadmin
+
+#    Creates an isolated Docker network (bridge by default).
+     Allows containers to communicate using container names instead of IPs.
+     Provides automatic DNS resolution between containers in the same network.
+
+
+docker network create my-network
+now run again with command in line 4 but add the network name
+
+docker run -d --name db --network my-network -e POSTGRES_PASSWORD=rishith postgres
+docker run -d --name pgadmin --network my-network -e PGADMIN_DEFAULT_EMAIL=user@domain.com -e PGADMIN_DEFAULT_PASSWORD=rishith dpage/pgadmin4
+now network is added , run ping command in line 16
+
+
+
+
+docker run -d \
+  --name postgres_container \
+  -e POSTGRES_USER=rishith \
+  -e POSTGRES_PASSWORD=rishith \
+  -e PGDATA=/data/postgres \
+  -v postgres:/data/postgres \
+  -p 5432:5432 \
+  --network postgres \
+  --restart unless-stopped \
+  postgres
+
+  docker run -d	Runs the container in detached mode (in the background).
+  --name postgres_container	Names the container as postgres_container.
+  -e POSTGRES_USER=embarkx	Sets the PostgreSQL username as embarkx.
+  -e POSTGRES_PASSWORD=embarkx	Sets the PostgreSQL password as embarkx.
+  -e PGDATA=/data/postgres	Tells PostgreSQL to store data in /data/postgres inside the container.
+  -v postgres:/data/postgres	Creates a named volume (postgres) and maps it to /data/postgres (persistent storage).
+  -p 5432:5432	Maps PostgreSQL's default port 5432 from the container to the host system.
+  --network postgres	Connects the container to a Docker network named postgres.
+  --restart unless-stopped	Ensures the container restarts automatically unless manually stopped.
+  postgres	Specifies the PostgreSQL Docker image to use (latest version by default).
+
+
+Use Case:
+
+    This command creates and runs a PostgreSQL container.
+    It stores data persistently using a Docker volume.
+    It is accessible from other containers in the postgres network
+
+
+
+
+    Command:
+
+    docker run -d \
+      --name pgadmin_container \
+      -e PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org \
+      -e PGADMIN_DEFAULT_PASSWORD=admin \
+      -e PGADMIN_CONFIG_SERVER_MODE=False \
+      -v pgadmin:/var/lib/pgadmin \
+      -p 5050:80 \
+      --network postgres \
+      --restart unless-stopped \
+      dpage/pgadmin4
+
+    Explanation:
+    Command Part	Explanation
+    docker run -d	Runs the container in detached mode (background).
+    --name pgadmin_container	Names the container as pgadmin_container.
+    -e PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org	Sets the default admin email for pgAdmin.
+    -e PGADMIN_DEFAULT_PASSWORD=admin	Sets the default admin password for pgAdmin.
+    -e PGADMIN_CONFIG_SERVER_MODE=False	Disables multi-user mode (single-user mode for development).
+    -v pgadmin:/var/lib/pgadmin	Creates a named volume (pgadmin) for pgAdmin’s data (persistent storage).
+    -p 5050:80	Maps port 80 inside the container to port 5050 on the host machine.
+    --network postgres	Connects pgAdmin to the same network as PostgreSQL (postgres).
+    --restart unless-stopped	Ensures the container restarts automatically unless manually stopped.
+    dpage/pgadmin4	Specifies the pgAdmin Docker image to use.
+    Use Case:
+
+        This command creates and runs a pgAdmin container.
+        pgAdmin is accessible at http://localhost:5050 on the host system.
+        It connects to PostgreSQL via the postgres network.
+
+
+
+
+        now we cant sit and run indiviaual command so use docker compose
+
+        docker-compose bardidini , now do docker compose up -d command
+
+
+        now hit the route localhost:5050 and password is rishith
+        add new server ,give name as any name , go to connection tab , select hostname as postgres as it is in postgres image (compose file)
+        keep port as 5432 and username as rishith and password as rishith(application properties)
+
+
+
+        now click on postgres container and right lcick on database and create a new one called as jobapp

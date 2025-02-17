@@ -172,3 +172,6 @@ idre use madu or else pull for dockerregistry(hub) to whcih we had puahed
 docker run -p 8080:8080 imagename
 
 
+
+if you push to dockerhub na ,image iruthe , pull madi , run madi , aa dockerized app alli iro ella api nu use madko ashte
+
